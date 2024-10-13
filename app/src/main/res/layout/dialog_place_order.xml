@@ -3,31 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/custom_edittext_background"
+        android:padding="12dp"
+        android:elevation="4dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Phương thức thanh toán"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_grey"
+            android:layout_gravity="center"/>
 
         <RadioGroup
             android:id="@+id/paymentMethodGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
             <RadioButton
                 android:id="@+id/radioCash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Tiền mặt" />
-
+                android:text="Tiền mặt"
+                android:textSize="16sp"
+                android:textColor="@color/blue_grey"/>
         </RadioGroup>
     </LinearLayout>
 
@@ -35,39 +44,60 @@
         android:id="@+id/recipientName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tên người nhận" />
+        android:hint="Tên người nhận"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/custom_edittext_background"
+        android:textColor="@color/blue_grey"/>
 
     <EditText
         android:id="@+id/recipientAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Địa chỉ người nhận" />
+        android:hint="Địa chỉ người nhận"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_edittext_background"
+        android:textColor="@color/blue_grey"/>
 
     <EditText
         android:id="@+id/recipientPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Số điện thoại người nhận" />
+        android:hint="Số điện thoại người nhận"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/custom_edittext_background"
+        android:textColor="@color/blue_grey"/>
+
     <TextView
         android:id="@+id/totalAmountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Amount:"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginTop="8dp"/>
+        android:textColor="@color/blue_grey"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="4dp"/>
 
     <TextView
         android:id="@+id/totalAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
+        android:textSize="18sp"
+        android:textColor="@color/blue_grey"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnPlaceOrder"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đặt hàng" />
+        android:text="Đặt hàng"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/white"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:layout_marginTop="12dp"/>
 </LinearLayout>

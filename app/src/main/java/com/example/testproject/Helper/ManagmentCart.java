@@ -70,6 +70,6 @@ public class ManagmentCart {
         // Lưu danh sách trống vào TinyDB để xóa giỏ hàng
         tinyDB.putListObject("CartList", emptyList);
         // Hiển thị thông báo giỏ hàng đã được xóa
-        Toast.makeText(context, "Cart has been cleared", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Cart has been cleared", Toast.LENGTH_SHORT).show();
     }
 }
