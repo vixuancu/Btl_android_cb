@@ -64,4 +64,12 @@ public class ManagmentCart {
         tinyDB.putListObject("CartList",listItem);
         changeNumberItemsListener.change();
     }
+    public void clearCart() {
+        // Tạo danh sách trống
+        ArrayList<Foods> emptyList = new ArrayList<>();
+        // Lưu danh sách trống vào TinyDB để xóa giỏ hàng
+        tinyDB.putListObject("CartList", emptyList);
+        // Hiển thị thông báo giỏ hàng đã được xóa
+        Toast.makeText(context, "Cart has been cleared", Toast.LENGTH_SHORT).show();
+    }
 }

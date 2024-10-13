@@ -23,8 +23,16 @@ public class IntroActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding=ActivityIntroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        // Kiểm tra trạng thái đăng nhập
+        if (mAuth.getCurrentUser() != null) {
+            // Người dùng đã đăng nhập, chuyển đến MainActivity
+            startActivity(new Intent(IntroActivity.this, MainActivity.class));
+            finish(); // Đóng IntroActivity để người dùng không quay lại được
+            return; // Kết thúc phương thức tại đây
+        }
         setVariable();
         getWindow().setStatusBarColor(Color.parseColor("#FFE4B5"));
+
     }
 
     private void setVariable() {
