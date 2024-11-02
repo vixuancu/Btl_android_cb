@@ -59,13 +59,13 @@ public class CartActivity extends BaseActivity {
     private void caculateCart() {
         double percentTax=0.02;// percent 2% tax
         double delivery=10; //dollar
-        tax=Math.round(managmentCart.getTotalFee()*percentTax*100.0)/100;
-        double total=Math.round((managmentCart.getTotalFee()+tax+delivery)*100)/100;
-        double itemTotal=Math.round(managmentCart.getTotalFee()*100)/100;
-        binding.totalFeeTxt.setText("$"+itemTotal);
-        binding.taxTxt.setText("$" + tax);
-        binding.deliveryTxt.setText("$"+delivery);
-        binding.totalTxt.setText("$"+total);
+        tax=Math.round(managmentCart.getTotalFee()*percentTax*100.0)/100.0;
+        double total=Math.round((managmentCart.getTotalFee()+tax+delivery)*100.0)/100.0;
+        double itemTotal=Math.round(managmentCart.getTotalFee()*100.0)/100.0;
+        binding.totalFeeTxt.setText(String.format("$%.2f",itemTotal));
+        binding.taxTxt.setText(String.format("$%.2f", tax));
+        binding.deliveryTxt.setText(String.format("$%.2f",delivery));
+        binding.totalTxt.setText(String.format("$%.2f",total));
     }
 
     private void setVariable() {
@@ -93,7 +93,7 @@ public class CartActivity extends BaseActivity {
         double totalAmount = Math.round((itemTotal + tax + deliveryFee) * 100) / 100;
 
         // Hiển thị tổng tiền trong TextView
-        totalAmountTextView.setText("$" + totalAmount);
+        totalAmountTextView.setText(String.format("$%.2f", totalAmount)); // Đảm bảo hiển thị chính xác
 
         AlertDialog dialog = builder.create();
         dialog.show();

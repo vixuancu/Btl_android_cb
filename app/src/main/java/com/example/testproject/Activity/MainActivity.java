@@ -3,8 +3,11 @@ package com.example.testproject.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -50,8 +53,38 @@ public class MainActivity extends BaseActivity {
         initBestFood();
         initCategory();
         setVariable();
+        performSearch();
+        openFilter();
     }
 
+    private void openFilter() {
+        // Lấy giá trị từ Spinner cho Price, Location và Time
+        String selectedPrice = binding.priceSp.getSelectedItem().toString();
+        String selectedLocation = binding.locationSp.getSelectedItem().toString();
+        String selectedTime = binding.timeSp.getSelectedItem().toString();
+
+        // Tạo Intent để mở ListFoodsActivity
+        Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+
+        // Truyền các giá trị lọc qua Intent
+        intent.putExtra("selectedPrice", selectedPrice);
+        intent.putExtra("selectedLocation", selectedLocation);
+        intent.putExtra("selectedTime", selectedTime);
+
+        // Khởi chạy ListFoodsActivity
+        startActivity(intent);
+    }
+
+    private void performSearch() {
+        String text = binding.searchEdt.getText().toString();
+        if (!text.isEmpty()) {
+            Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+            intent.putExtra("text", text);
+            intent.putExtra("isSearch", true);
+            startActivity(intent);
+        }
+    }
+    // Hàm thực hiện tìm kiếm
     private void setVariable() {
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,18 +93,51 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(MainActivity.this,LoginActivity.class));
             }
         });
+//        binding.searchBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String text=binding.searchEdt.getText().toString();
+//                if(!text.isEmpty()){
+//                    Intent intent =new Intent(MainActivity.this, ListFoodsActivity.class);
+//                    intent.putExtra("text",text);
+//                    intent.putExtra("isSearch",true);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+
+
+        // Đặt lắng nghe cho nút tìm kiếm
         binding.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text=binding.searchEdt.getText().toString();
-                if(!text.isEmpty()){
-                    Intent intent =new Intent(MainActivity.this, ListFoodsActivity.class);
-                    intent.putExtra("text",text);
-                    intent.putExtra("isSearch",true);
-                    startActivity(intent);
-                }
+                performSearch(); // Gọi hàm tìm kiếm
             }
         });
+        // filter
+        binding.filterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilter();
+            }
+        });
+
+// Đặt lắng nghe cho hành động của bàn phím trên searchEdt
+        binding.searchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                // Kiểm tra nếu hành động là tìm kiếm (Enter)
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    performSearch(); // Gọi hàm tìm kiếm
+                    return true; // Đánh dấu rằng sự kiện đã được xử lý
+                }
+                return false; // Không xử lý sự kiện
+            }
+        });
+
+
+
         binding.cartBtn.setOnClickListener(view -> startActivity(new Intent(MainActivity.this,CartActivity.class)));
     }
 
@@ -89,7 +155,8 @@ public class MainActivity extends BaseActivity {
                     }
                     if(list.size()>0) {
                         binding.bestFoodView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false));
-                        RecyclerView.Adapter adapter= new BestFoodAdapter(list);
+//                        RecyclerView.Adapter adapter= new BestFoodAdapter(list);
+                        RecyclerView.Adapter adapter = new BestFoodAdapter(list, MainActivity.this);
                         binding.bestFoodView.setAdapter(adapter);
                     }
                     binding.progressBarBestFood.setVisibility(View.GONE);

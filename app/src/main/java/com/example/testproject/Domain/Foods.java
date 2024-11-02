@@ -16,6 +16,15 @@ public class Foods implements Serializable {
     private int TimeValue;
     private String Title;
     private int numberInCart;
+    private Location location; // Hoặc String nếu bạn lưu trữ dưới dạng chuỗi
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
     public Foods() {
     }
