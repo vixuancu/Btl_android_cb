@@ -36,6 +36,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
@@ -54,7 +55,7 @@ public class MainActivity extends BaseActivity {
         initCategory();
         setVariable();
         performSearch();
-        openFilter();
+
     }
 
     private void openFilter() {
@@ -63,14 +64,25 @@ public class MainActivity extends BaseActivity {
         String selectedLocation = binding.locationSp.getSelectedItem().toString();
         String selectedTime = binding.timeSp.getSelectedItem().toString();
 
+
+        HashMap<String, Integer> locationMap = new HashMap<>();
+        locationMap.put("HaNoi-cs1", 0);  // Hà Nội có ID là 0
+        locationMap.put("HaNoi-cs2", 1); // Đà Nẵng có ID là 1
         // Tạo Intent để mở ListFoodsActivity
         Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
 
         // Truyền các giá trị lọc qua Intent
         intent.putExtra("selectedPrice", selectedPrice);
-        intent.putExtra("selectedLocation", selectedLocation);
+//        intent.putExtra("selectedLocation", selectedLocation);
         intent.putExtra("selectedTime", selectedTime);
-
+        intent.putExtra("isFilter", true);
+        // Tìm locationId từ selectedLocation
+        Integer locationId = locationMap.get(selectedLocation);
+        if (locationId != null) {
+            intent.putExtra("selectedLocationId", locationId);
+        } else {
+            Log.d("DEBUG", "Khong tim thay LocationId cho vi tri: " + selectedLocation);
+        }
         // Khởi chạy ListFoodsActivity
         startActivity(intent);
     }
@@ -86,54 +98,27 @@ public class MainActivity extends BaseActivity {
     }
     // Hàm thực hiện tìm kiếm
     private void setVariable() {
-        binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this,LoginActivity.class));
-            }
+        binding.logoutBtn.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this,LoginActivity.class));
         });
-//        binding.searchBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String text=binding.searchEdt.getText().toString();
-//                if(!text.isEmpty()){
-//                    Intent intent =new Intent(MainActivity.this, ListFoodsActivity.class);
-//                    intent.putExtra("text",text);
-//                    intent.putExtra("isSearch",true);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-
 
         // Đặt lắng nghe cho nút tìm kiếm
-        binding.searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                performSearch(); // Gọi hàm tìm kiếm
-            }
+        binding.searchBtn.setOnClickListener(view -> {
+            performSearch(); // Gọi hàm tìm kiếm
         });
         // filter
-        binding.filterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFilter();
-            }
-        });
+        binding.filterBtn.setOnClickListener(v -> openFilter());
 
 // Đặt lắng nghe cho hành động của bàn phím trên searchEdt
-        binding.searchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // Kiểm tra nếu hành động là tìm kiếm (Enter)
-                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    performSearch(); // Gọi hàm tìm kiếm
-                    return true; // Đánh dấu rằng sự kiện đã được xử lý
-                }
-                return false; // Không xử lý sự kiện
+        binding.searchEdt.setOnEditorActionListener((v, actionId, event) -> {
+            // Kiểm tra nếu hành động là tìm kiếm (Enter)
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                performSearch(); // Gọi hàm tìm kiếm
+                return true; // Đánh dấu rằng sự kiện đã được xử lý
             }
+            return false; // Không xử lý sự kiện
         });
 
 
@@ -153,7 +138,7 @@ public class MainActivity extends BaseActivity {
                     for(DataSnapshot issue:snapshot.getChildren()){
                         list.add(issue.getValue(Foods.class));
                     }
-                    if(list.size()>0) {
+                    if(!list.isEmpty()) {
                         binding.bestFoodView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false));
 //                        RecyclerView.Adapter adapter= new BestFoodAdapter(list);
                         RecyclerView.Adapter adapter = new BestFoodAdapter(list, MainActivity.this);
@@ -204,7 +189,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-    };
+    }
 
     private void initLocation() {
         DatabaseReference myRef = database.getReference("Location");

@@ -33,25 +33,19 @@ public class LoginActivity extends BaseActivity {
 
 
     private void setVariable() {
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = binding.userEdt.getText().toString();
-                String password = binding.passEdt.getText().toString();
-                if(!email.isEmpty() && !password.isEmpty()) {
-                    mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()) {
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            }else {
-                                Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }else {
-                    Toast.makeText(LoginActivity.this, "may deo biet dien email, password a", Toast.LENGTH_SHORT).show();
-                }
+        binding.loginBtn.setOnClickListener(view -> {
+            String email = binding.userEdt.getText().toString();
+            String password = binding.passEdt.getText().toString();
+            if(!email.isEmpty() && !password.isEmpty()) {
+                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginActivity.this, task -> {
+                    if(task.isSuccessful()) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else {
+                Toast.makeText(LoginActivity.this, "may deo biet dien email, password a", Toast.LENGTH_SHORT).show();
             }
         });
 }

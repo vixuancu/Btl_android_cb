@@ -90,7 +90,8 @@
                         android:textAlignment="center"
                         android:textColor="@color/blue_grey"
                         android:textColorHint="@color/blue_grey"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        tools:ignore="TouchTargetSizeCheck" />
 
                     <ImageView
                         android:id="@+id/searchBtn"
@@ -143,7 +144,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:background="@null" />
+                        android:background="@null"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -169,7 +171,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:background="@null" />
+                        android:background="@null"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -194,7 +197,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:background="@null" />
+                        android:background="@null"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -27,6 +27,10 @@ public class ListFoodsActivity extends BaseActivity {
     private String categoryName;
     private String searchText;
     private boolean isSearch;
+    private String selectedPrice;
+    private int selectedLocationId;
+    private String selectedTime;
+    private boolean isFilter;
     private ArrayList<Foods> allFoods; // Danh sách toàn bộ món ăn
 
     @Override
@@ -51,12 +55,17 @@ public class ListFoodsActivity extends BaseActivity {
 
         if (isSearch) {
             query = myRef.orderByChild("Title");
+        } else if (isFilter) {
+            // Nếu có bộ lọc, truy vấn theo CategoryId và có thể kết hợp thêm các điều kiện khác nếu cần
+            query = myRef.orderByChild("CategoryId").equalTo(categoryId);
+            // Có thể thêm các điều kiện khác nếu bạn có thêm thông tin về Price, Location, Time từ các bộ lọc
         } else {
             query = myRef.orderByChild("CategoryId").equalTo(categoryId);
         }
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+               // allFoods.clear(); // Xóa dữ liệu cũ để tránh trùng lặp khi tải lại
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         Foods food = issue.getValue(Foods.class);
@@ -72,13 +81,13 @@ public class ListFoodsActivity extends BaseActivity {
                             }
                         }
                     }
-                    applyFilters(); // Gọi applyFilters để áp dụng bộ lọc
-                    // Thiết lập RecyclerView sau khi đã có danh sách
-                    if(allFoods.size()>0) {
-                        binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodsActivity.this,2));
-                        adapterListFood=new FoodListAdapter(allFoods);
-                        binding.foodListView.setAdapter(adapterListFood);
+                    if (!allFoods.isEmpty()) {
+                        applyFilters();
+                    } else {
+                        Log.d("DEBUG", "Không có dữ liệu để hiển thị");
                     }
+
+
                     binding.progressBar.setVisibility(View.GONE);
                 }
             }
@@ -88,14 +97,11 @@ public class ListFoodsActivity extends BaseActivity {
                 binding.progressBar.setVisibility(View.GONE);
             }
         });
+
     }
 
     // Xử lý filter
     private void applyFilters() {
-        String selectedPrice = getIntent().getStringExtra("selectedPrice");
-        String selectedLocation = getIntent().getStringExtra("selectedLocation");
-        String selectedTime = getIntent().getStringExtra("selectedTime");
-
         ArrayList<Foods> filteredList = new ArrayList<>();
 
         for (Foods food : allFoods) { // Lặp qua allFoods thay vì filteredList
@@ -104,67 +110,91 @@ public class ListFoodsActivity extends BaseActivity {
             boolean matchesTime = true;
             try {
                 // Kiểm tra điều kiện lọc giá
+//                Log.d("DEBUG", "Gia tri cua selectedPrice: " + selectedPrice);
                 if (selectedPrice != null) {
+                    Log.d("DEBUG", "Gia tri cua food.getPrice(): " + food.getPrice());
                     if (selectedPrice.equals("1$ - 10$")) {
-                        matchesPrice = food.getPrice() <= 10;
+                        matchesPrice = food.getPrice() >= 1 && food.getPrice() <= 10;
+
                     } else if (selectedPrice.equals("10$ - 30$")) {
                         matchesPrice = food.getPrice() > 10 && food.getPrice() <= 30;
                     } else if (selectedPrice.equals("more than 30$")) {
                         matchesPrice = food.getPrice() > 30;
                     }
+                    else {
+                        Log.d("DEBUG", "dell co Price");
+                    }
+                    Log.d("DEBUG", "Ket qua kiem tra matchesPrice: " + matchesPrice);
                 }
 
+
                 // Kiểm tra điều kiện lọc vị trí
-                if (selectedLocation != null && food.getLocation() != null) {
+                if (selectedLocationId !=-1 ) {
                     // So sánh tên vị trí với giá trị được chọn
-                    matchesLocation = food.getLocation().getLoc().equals(selectedLocation);
+//                    Log.d("DEBUG", "LocationId " + selectedLocationId);
+//                    matchesLocation = food.getLocationId() == (selectedLocationId);
+
+                    if (food.getLocationId() == selectedLocationId)
+                    {
+                         matchesLocation = food.getLocationId() == selectedLocationId;
+                    }
+                    Log.d("DEBUG", "Ket qua kiem tra matchesLocation: " + matchesLocation);
                 }
+
 
                 // Kiểm tra điều kiện lọc thời gian
                 if (selectedTime != null) {
+                    Log.d("DEBUG", "Gia tri cua food.getTimeValue(): " + food.getTimeValue());
                     if (selectedTime.equals("0 - 10 min")) {
                         matchesTime = food.getTimeValue() < 10;
                     } else if (selectedTime.equals("10 - 30 min")) {
                         matchesTime = food.getTimeValue() >= 10 && food.getTimeValue() <= 30;
                     } else if (selectedTime.equals("more than 30 min")) {
                         matchesTime = food.getTimeValue() > 30;
+                    }else {
+                        Log.d("DEBUG", "dell co Time");
                     }
+                    Log.d("DEBUG", "Ket qua kiem tra matchesTime: " + matchesTime);
                 }
 
                 // Nếu tất cả các điều kiện đều khớp, thêm món ăn vào danh sách lọc
                 if (matchesPrice && matchesLocation && matchesTime) {
                     filteredList.add(food);
+                    Log.d("DEBUG", "Danh sach filteredList sau khi add: " + filteredList.size());
                 }
             }catch (Exception e) {
-                Log.e("DEBUG", "Lỗi khi lọc thực phẩm: " + food.getTitle() + ", Error: " + e.getMessage());
+                Log.e("DEBUG", "Loi khi loc thuc pham: " + food.getTitle() + ", Error: " + e.getMessage());
             }
 
 
         }
-
         // Cập nhật adapter với danh sách đã lọc
-        if(filteredList.size()>0) {
+        if(!allFoods.isEmpty()) {
             binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodsActivity.this,2));
-            adapterListFood=new FoodListAdapter(filteredList);
+            adapterListFood=new FoodListAdapter(filteredList.isEmpty() ? allFoods : filteredList);
             binding.foodListView.setAdapter(adapterListFood);
         }
     }
 
     private void getIntentExtra() {
         categoryId = getIntent().getIntExtra("CategoryId", 0);
+
         categoryName = getIntent().getStringExtra("CategoryName");
         Log.i("CategoryID", "[" + categoryId + "]");
         searchText = getIntent().getStringExtra("text");
         isSearch = getIntent().getBooleanExtra("isSearch", false);
+        isFilter = getIntent().getBooleanExtra("isFilter", false);
+        selectedPrice = getIntent().getStringExtra("selectedPrice");
+        selectedLocationId = getIntent().getIntExtra("selectedLocationId",-1);
+        selectedTime = getIntent().getStringExtra("selectedTime");
+
+        Log.d("DEBUG", "selectedPrice: " + selectedPrice);
+        Log.d("DEBUG", "selectedLocationId: " + selectedLocationId);
+        Log.d("DEBUG", "selectedTime: " + selectedTime);
         if (categoryName != null) {
             binding.titleTxt.setText(categoryName);
         }
 
-        binding.backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        binding.backBtn.setOnClickListener(view -> finish());
     }
 }
