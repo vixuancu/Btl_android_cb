@@ -147,7 +147,6 @@ public class MainActivity extends BaseActivity {
                     binding.progressBarBestFood.setVisibility(View.GONE);
                     }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

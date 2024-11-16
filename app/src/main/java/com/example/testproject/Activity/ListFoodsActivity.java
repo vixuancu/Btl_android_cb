@@ -56,16 +56,17 @@ public class ListFoodsActivity extends BaseActivity {
         if (isSearch) {
             query = myRef.orderByChild("Title");
         } else if (isFilter) {
-            // Nếu có bộ lọc, truy vấn theo CategoryId và có thể kết hợp thêm các điều kiện khác nếu cần
-            query = myRef.orderByChild("CategoryId").equalTo(categoryId);
+            // Nếu có bộ lọc,
+            query=myRef;
             // Có thể thêm các điều kiện khác nếu bạn có thêm thông tin về Price, Location, Time từ các bộ lọc
         } else {
             query = myRef.orderByChild("CategoryId").equalTo(categoryId);
+
         }
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-               // allFoods.clear(); // Xóa dữ liệu cũ để tránh trùng lặp khi tải lại
+                allFoods.clear(); // Xóa dữ liệu cũ để tránh trùng lặp khi tải lại
                 if (snapshot.exists()) {
                     for (DataSnapshot issue : snapshot.getChildren()) {
                         Foods food = issue.getValue(Foods.class);
@@ -82,7 +83,7 @@ public class ListFoodsActivity extends BaseActivity {
                         }
                     }
                     if (!allFoods.isEmpty()) {
-                        applyFilters();
+                        applyFilters();//Gọi hàm lọc sau khi đã lấy toàn bộ món ăn
                     } else {
                         Log.d("DEBUG", "Không có dữ liệu để hiển thị");
                     }
@@ -112,7 +113,7 @@ public class ListFoodsActivity extends BaseActivity {
                 // Kiểm tra điều kiện lọc giá
 //                Log.d("DEBUG", "Gia tri cua selectedPrice: " + selectedPrice);
                 if (selectedPrice != null) {
-                    Log.d("DEBUG", "Gia tri cua food.getPrice(): " + food.getPrice());
+//                    Log.d("DEBUG", "Gia tri cua food.getPrice(): " + food.getPrice());
                     if (selectedPrice.equals("1$ - 10$")) {
                         matchesPrice = food.getPrice() >= 1 && food.getPrice() <= 10;
 
@@ -171,7 +172,11 @@ public class ListFoodsActivity extends BaseActivity {
         // Cập nhật adapter với danh sách đã lọc
         if(!allFoods.isEmpty()) {
             binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodsActivity.this,2));
-            adapterListFood=new FoodListAdapter(filteredList.isEmpty() ? allFoods : filteredList);
+//            adapterListFood=new FoodListAdapter(filteredList.isEmpty() ? allFoods : filteredList); bug là rỗng nó load hết
+            if(filteredList.isEmpty()) {
+                binding.titleTxt.setText("No matching results");
+            }
+            adapterListFood=new FoodListAdapter(filteredList);
             binding.foodListView.setAdapter(adapterListFood);
         }
     }

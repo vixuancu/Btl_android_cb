@@ -65,7 +65,7 @@ public class BestFoodAdapter extends RecyclerView.Adapter<BestFoodAdapter.ViewHo
         holder.addBestFood.setOnClickListener(v -> {
             food.setNumberInCart(1); // Số lượng mặc định là 1 khi thêm
             managmentCart.insertFood(food);
-            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show(); // Hiển thị thông báo
+            //Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show(); // Hiển thị thông báo
         });
     }
 

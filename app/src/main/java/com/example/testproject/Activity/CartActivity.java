@@ -89,8 +89,8 @@ public class CartActivity extends BaseActivity {
         double percentTax = 0.02;  // Thuế 2%
         double deliveryFee = 10;   // Phí giao hàng cố định $10
         double itemTotal = managmentCart.getTotalFee();
-        double tax = Math.round(itemTotal * percentTax * 100.0) / 100;
-        double totalAmount = Math.round((itemTotal + tax + deliveryFee) * 100) / 100;
+        double tax = Math.round(itemTotal * percentTax * 100.0) / 100.0;
+        double totalAmount = Math.round((itemTotal + tax + deliveryFee) * 100.0) / 100.0;
 
         // Hiển thị tổng tiền trong TextView
         totalAmountTextView.setText(String.format("$%.2f", totalAmount)); // Đảm bảo hiển thị chính xác
