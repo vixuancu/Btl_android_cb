@@ -48,6 +48,12 @@ public class LoginActivity extends BaseActivity {
                 Toast.makeText(LoginActivity.this, "may deo biet dien email, password a", Toast.LENGTH_SHORT).show();
             }
         });
+        binding.loginToSignUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+            }
+        });
 }
 //    private void retrySignIn(String email, String password, int retryCount) {
 //        if (retryCount == 0) {

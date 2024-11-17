@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:background="@drawable/cat_0_background"
             android:padding="12dp"
-            tools:srcCompat="@drawable/btn_1" />
+            app:srcCompat="@drawable/btn_1" />
 
         <TextView
             android:id="@+id/catNameTxt"

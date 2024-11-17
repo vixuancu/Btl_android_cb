@@ -41,7 +41,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/pic"
                     app:layout_constraintEnd_toEndOf="@+id/pic"
                     app:layout_constraintTop_toBottomOf="@+id/pic"
-                    tools:srcCompat="@drawable/favorite_white" />
+                    app:srcCompat="@drawable/favorite_white" />
 
                 <ImageView
                     android:id="@+id/backBtn"

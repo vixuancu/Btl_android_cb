@@ -60,7 +60,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/timeTxt"
                 app:layout_constraintStart_toEndOf="@+id/timeTxt"
                 app:layout_constraintTop_toTopOf="@+id/timeTxt"
-                tools:srcCompat="@drawable/time" />
+                app:srcCompat="@drawable/time" />
 
             <TextView
                 android:id="@+id/priceTxt"
