@@ -55,24 +55,5 @@ public class LoginActivity extends BaseActivity {
             }
         });
 }
-//    private void retrySignIn(String email, String password, int retryCount) {
-//        if (retryCount == 0) {
-//            Toast.makeText(LoginActivity.this, "Failed to authenticate after multiple attempts", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-//                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                    finish();
-//                } else {
-//                    // Retry logic
-//                    Toast.makeText(LoginActivity.this, "Authentication failed, retrying...", Toast.LENGTH_SHORT).show();
-//                    retrySignIn(email, password, retryCount - 1);
-//                }
-//            }
-//        });
-//    }
+
 }

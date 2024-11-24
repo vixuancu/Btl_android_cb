@@ -34,7 +34,7 @@ public class ManagmentCart {
         }else{
             listpop.add(item);
         }
-        tinyDB.putListObject("CartList",listpop);
+        tinyDB.putListObject("CartList",listpop);// Lưu lại trạng thái mới
         Toast.makeText(context, "Added to your Cart", Toast.LENGTH_SHORT).show();
     }
 
@@ -56,7 +56,13 @@ public class ManagmentCart {
         }else{
             listItem.get(position).setNumberInCart(listItem.get(position).getNumberInCart()-1);
         }
-        tinyDB.putListObject("CartList",listItem);
+        // Nếu danh sách trống, xóa toàn bộ giỏ hàng
+        if (listItem.isEmpty()) {
+            clearCart();
+        } else {
+            tinyDB.putListObject("CartList", listItem);
+        }
+
         changeNumberItemsListener.change();
     }
     public  void plusNumberItem(ArrayList<Foods> listItem,int position,ChangeNumberItemsListener changeNumberItemsListener){

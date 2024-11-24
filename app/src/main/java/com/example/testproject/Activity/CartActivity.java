@@ -52,7 +52,11 @@ public class CartActivity extends BaseActivity {
         }
         LinearLayoutManager linearLayoutManager =new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         binding.cardView.setLayoutManager(linearLayoutManager);
-        adapter= new CartAdapter(managmentCart.getListCart(), this, () -> caculateCart());
+        adapter= new CartAdapter(managmentCart.getListCart(), this, () -> {
+            caculateCart();
+            initList(); // Gọi lại để kiểm tra danh sách rỗng hay không
+        });
+
         binding.cardView.setAdapter(adapter);
     }
 
@@ -84,7 +88,9 @@ public class CartActivity extends BaseActivity {
         RadioGroup paymentMethodGroup = dialogView.findViewById(R.id.paymentMethodGroup);
         Button btnPlaceOrder = dialogView.findViewById(R.id.btnPlaceOrder);
         TextView totalAmountTextView = dialogView.findViewById(R.id.totalAmount);
-
+        EditText recipientName = dialogView.findViewById(R.id.recipientName);
+        EditText recipientAddress = dialogView.findViewById(R.id.recipientAddress);
+        EditText recipientPhone = dialogView.findViewById(R.id.recipientPhone);
         // Tính tổng số tiền từ giỏ hàng (bao gồm phí giao hàng và thuế nếu có)
         double percentTax = 0.02;  // Thuế 2%
         double deliveryFee = 10;   // Phí giao hàng cố định $10
@@ -100,22 +106,43 @@ public class CartActivity extends BaseActivity {
 
         // Xử lý sự kiện khi người dùng nhấn nút "Đặt hàng"
         btnPlaceOrder.setOnClickListener(view -> {
-            // Lấy phương thức thanh toán đã chọn
-            int selectedPaymentMethod = paymentMethodGroup.getCheckedRadioButtonId();
-            if (selectedPaymentMethod == R.id.radioCash) {
-                // Nếu người dùng chọn thanh toán bằng tiền mặt, xử lý đặt hàng
-                placeOrder();
-                dialog.dismiss();
-            } else {
-                Toast.makeText(CartActivity.this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
+            String name = recipientName.getText().toString();
+            String addres = recipientAddress.getText().toString();
+            String phone = recipientPhone.getText().toString();
+            if(name.isEmpty()) {
+                Toast.makeText(CartActivity.this, "Vui long dien ten", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if(addres.isEmpty()) {
+                Toast.makeText(CartActivity.this, "Vui long dien dia chi", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(phone.isEmpty()) {
+                Toast.makeText(CartActivity.this, "Vui long dien so dien thoai", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(!name.isEmpty()&&!addres.isEmpty()&&!phone.isEmpty()) {
+                // Lấy phương thức thanh toán đã chọn
+                int selectedPaymentMethod = paymentMethodGroup.getCheckedRadioButtonId();
+                if (selectedPaymentMethod == R.id.radioCash) {
+                    // Nếu người dùng chọn thanh toán bằng tiền mặt, xử lý đặt hàng
+                    placeOrder();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(CartActivity.this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
         });
     }
 
 
     private void placeOrder() {
+
         // Giả lập xử lý đặt hàng thành công
         managmentCart.clearCart();  // Reset giỏ hàng
+       // initList(); // Làm mới giao diện và hiển thị "Giỏ hàng trống"
         adapter.notifyDataSetChanged();  // Cập nhật giao diện giỏ hàng
         binding.emptyTxt.setVisibility(View.VISIBLE);
         binding.scrollViewCart.setVisibility(View.GONE);

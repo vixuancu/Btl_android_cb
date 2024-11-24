@@ -3,6 +3,7 @@ package com.example.testproject.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,15 +29,23 @@ public class SignupActivity extends BaseActivity {
         setContentView(binding.getRoot());
         setVariable();
     }
-
+    private boolean isValidEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
     private void setVariable() {
         binding.signupBtn.setOnClickListener(view -> {
                 String email = binding.userEdt.getText().toString();
                 String password = binding.passEdt.getText().toString();
+
+            if(!isValidEmail(email)) {
+                Toast.makeText(SignupActivity.this, "Invalid Email Format", Toast.LENGTH_SHORT).show();
+                return;
+            }
                 if(password.length()<6) {
                     Toast.makeText(SignupActivity.this, "your password must be 6 character", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
