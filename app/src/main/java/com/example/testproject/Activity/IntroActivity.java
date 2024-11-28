@@ -21,6 +21,7 @@ public class IntroActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Khởi tạo View Binding
         binding=ActivityIntroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Kiểm tra trạng thái đăng nhập

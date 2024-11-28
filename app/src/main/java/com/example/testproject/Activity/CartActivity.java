@@ -20,10 +20,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testproject.Adapter.CartAdapter;
+import com.example.testproject.Domain.Foods;
+import com.example.testproject.Domain.OrderItem;
+import com.example.testproject.Domain.Orders;
 import com.example.testproject.Helper.ChangeNumberItemsListener;
 import com.example.testproject.Helper.ManagmentCart;
 import com.example.testproject.R;
 import com.example.testproject.databinding.ActivityCartBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class CartActivity extends BaseActivity {
     private ActivityCartBinding binding;
@@ -107,13 +116,13 @@ public class CartActivity extends BaseActivity {
         // Xử lý sự kiện khi người dùng nhấn nút "Đặt hàng"
         btnPlaceOrder.setOnClickListener(view -> {
             String name = recipientName.getText().toString();
-            String addres = recipientAddress.getText().toString();
+            String address = recipientAddress.getText().toString();
             String phone = recipientPhone.getText().toString();
             if(name.isEmpty()) {
                 Toast.makeText(CartActivity.this, "Vui long dien ten", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(addres.isEmpty()) {
+            if(address.isEmpty()) {
                 Toast.makeText(CartActivity.this, "Vui long dien dia chi", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -121,12 +130,12 @@ public class CartActivity extends BaseActivity {
                 Toast.makeText(CartActivity.this, "Vui long dien so dien thoai", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(!name.isEmpty()&&!addres.isEmpty()&&!phone.isEmpty()) {
+            if(!name.isEmpty()&&!address.isEmpty()&&!phone.isEmpty()) {
                 // Lấy phương thức thanh toán đã chọn
                 int selectedPaymentMethod = paymentMethodGroup.getCheckedRadioButtonId();
                 if (selectedPaymentMethod == R.id.radioCash) {
                     // Nếu người dùng chọn thanh toán bằng tiền mặt, xử lý đặt hàng
-                    placeOrder();
+                    placeOrder(name, address, phone,totalAmount);
                     dialog.dismiss();
                 } else {
                     Toast.makeText(CartActivity.this, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
@@ -138,17 +147,49 @@ public class CartActivity extends BaseActivity {
     }
 
 
-    private void placeOrder() {
+    private void placeOrder(String name, String address, String phone,double totalAmount) {
+        // Lấy thời gian hiện tại
+        String orderDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        // Chuyển đổi danh sách Foods thành OrderItem
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (Foods food : managmentCart.getListCart()) {
+            orderItems.add(new OrderItem(
+                    food.getId(),
+                    food.getNumberInCart(),
+                    food.getPrice(),
+                    food.getTitle(),
+                    food.getImagePath()
+            ));
+        }
+        // Tạo đơn hàng
+        Orders order = new Orders();
+        order.setOrderId1(database.getReference("Orders").push().getKey()); // Tạo ID đơn hàng mới
+        order.setUserId(getCurrentUserId());
+        order.setStatus("Pending");
+        order.setOrderDate(orderDate);
+        order.setTotalPrice(totalAmount);
+        order.setLocation(address);
+        order.setUsername(name);
+        order.setPhone(phone);
+        order.setItems(orderItems); // Lấy danh sách món từ giỏ hàng
+        //-----
+        // Lưu đơn hàng lên Firebase
+        database.getReference("Orders").child(order.getOrderId1()).setValue(order)
+                .addOnSuccessListener(aVoid -> {
+                    managmentCart.clearCart(); // Reset giỏ hàng
+                    adapter.notifyDataSetChanged(); // Cập nhật giao diện
+                    binding.emptyTxt.setVisibility(View.VISIBLE);
+                    binding.scrollViewCart.setVisibility(View.GONE);
+                    Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to place order: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
 
-        // Giả lập xử lý đặt hàng thành công
-        managmentCart.clearCart();  // Reset giỏ hàng
+        // ------Giả lập xử lý đặt hàng thành công
+
        // initList(); // Làm mới giao diện và hiển thị "Giỏ hàng trống"
-        adapter.notifyDataSetChanged();  // Cập nhật giao diện giỏ hàng
-        binding.emptyTxt.setVisibility(View.VISIBLE);
-        binding.scrollViewCart.setVisibility(View.GONE);
 
-        // Hiển thị thông báo đặt hàng thành công (có thể sử dụng Toast hoặc Snackbar)
-        Toast.makeText(this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
     }
 
 }

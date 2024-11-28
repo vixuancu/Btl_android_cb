@@ -17,6 +17,21 @@ public class Foods implements Serializable {
     private String Title;
     private int numberInCart;
 
+    public Foods(int categoryId, String description, boolean bestFood, int id, int locationId, double price, String imagePath, int priceId, double star, int timeId, int timeValue, String title, int numberInCart) {
+        CategoryId = categoryId;
+        Description = description;
+        BestFood = bestFood;
+        Id = id;
+        LocationId = locationId;
+        Price = price;
+        ImagePath = imagePath;
+        PriceId = priceId;
+        Star = star;
+        TimeId = timeId;
+        TimeValue = timeValue;
+        Title = title;
+        this.numberInCart = numberInCart;
+    }
 
     public Foods() {
     }

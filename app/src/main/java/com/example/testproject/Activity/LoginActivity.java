@@ -17,6 +17,10 @@ import com.example.testproject.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends BaseActivity {
     ActivityLoginBinding binding;
@@ -33,27 +37,50 @@ public class LoginActivity extends BaseActivity {
 
 
     private void setVariable() {
+        // Xử lý khi nhấn nút đăng nhập
         binding.loginBtn.setOnClickListener(view -> {
-            String email = binding.userEdt.getText().toString();
-            String password = binding.passEdt.getText().toString();
-            if(!email.isEmpty() && !password.isEmpty()) {
-                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginActivity.this, task -> {
-                    if(task.isSuccessful()) {
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    }else {
-                        Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+            String email = binding.userEdt.getText().toString().trim();
+            String password = binding.passEdt.getText().toString().trim();
+
+            if (!email.isEmpty() && !password.isEmpty()) {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        String userId = getCurrentUserId(); // Sử dụng hàm từ BaseActivity
+                        DatabaseReference userRef = database.getReference("Users").child(userId);
+
+                        // Lấy vai trò từ Firebase
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String role = snapshot.child("role").getValue(String.class);
+                                    if ("admin".equals(role)) {
+                                        startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+                                    } else {
+                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    }
+                                    finish(); // Đóng LoginActivity sau khi chuyển trang
+                                } else {
+                                    showToast("User role not found.");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                showToast("Error fetching user role: " + error.getMessage());
+                            }
+                        });
+                    } else {
+                        showToast("Authentication failed: " + task.getException().getMessage());
                     }
                 });
-            }else {
-                Toast.makeText(LoginActivity.this, "may deo biet dien email, password a", Toast.LENGTH_SHORT).show();
+            } else {
+                showToast("Please fill in both email and password.");
             }
         });
-        binding.loginToSignUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-            }
-        });
-}
+
+        // Xử lý khi nhấn nút chuyển đến màn hình đăng ký
+        binding.loginToSignUpBtn.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignupActivity.class)));
+    }
 
 }

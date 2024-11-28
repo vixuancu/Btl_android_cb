@@ -98,9 +98,17 @@ public class MainActivity extends BaseActivity {
     }
     // Hàm thực hiện tìm kiếm
     private void setVariable() {
+        // logout
         binding.logoutBtn.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        });
+        // order history
+        binding.btnOrderHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,OrderHistoryActivity.class));
+            }
         });
 
         // Đặt lắng nghe cho nút tìm kiếm

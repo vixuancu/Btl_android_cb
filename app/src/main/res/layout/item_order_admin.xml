@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@android:color/white"
+    android:layout_marginBottom="4dp"
+    android:elevation="2dp">
+
+    <TextView
+        android:id="@+id/tvOrderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order ID: #12345"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User: John Doe"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvOrderTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order Time: 2024-11-25 12:45"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: $25.99"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvOrderStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: Pending"
+        android:textColor="@color/blue_grey"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnUpdateStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Status" />
+</LinearLayout>
