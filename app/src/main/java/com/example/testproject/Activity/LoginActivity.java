@@ -45,7 +45,7 @@ public class LoginActivity extends BaseActivity {
             if (!email.isEmpty() && !password.isEmpty()) {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        String userId = getCurrentUserId(); // Sử dụng hàm từ BaseActivity
+                        String userId = getCurrentUserId(); // Lấy ID người dùng
                         DatabaseReference userRef = database.getReference("Users").child(userId);
 
                         // Lấy vai trò từ Firebase
@@ -54,23 +54,35 @@ public class LoginActivity extends BaseActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     String role = snapshot.child("role").getValue(String.class);
-                                    if ("admin".equals(role)) {
-                                        startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+
+                                    if (role != null) {
+                                        switch (role) {
+                                            case "admin":
+                                                startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+                                                break;
+                                            case "user":
+                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                                break;
+                                            default:
+                                                showToast("Vai trò không hợp lệ: " + role);
+                                                break;
+                                        }
                                     } else {
-                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                        showToast("Không tìm thấy vai trò người dùng!");
                                     }
-                                    finish(); // Đóng LoginActivity sau khi chuyển trang
                                 } else {
-                                    showToast("User role not found.");
+                                    showToast("Không tìm thấy thông tin người dùng trong cơ sở dữ liệu!");
                                 }
+                                finish(); // Đóng LoginActivity
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                showToast("Error fetching user role: " + error.getMessage());
+                                showToast("Lỗi khi truy vấn Firebase: " + error.getMessage());
                             }
                         });
-                    } else {
+                    }
+                    else {
                         showToast("Authentication failed: " + task.getException().getMessage());
                     }
                 });

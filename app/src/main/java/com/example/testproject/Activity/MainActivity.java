@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -46,8 +47,8 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        
-        
+
+        role();
         initLocation();
         initTime();
         initPrice();
@@ -55,7 +56,62 @@ public class MainActivity extends BaseActivity {
         initCategory();
         setVariable();
         performSearch();
+        loadUserData();
 
+    }
+
+    private void role() {
+        // Kiểm tra vai trò
+        String userId = mAuth.getCurrentUser().getUid();
+        DatabaseReference userRef = database.getReference("Users").child(userId);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String role = snapshot.child("role").getValue(String.class);
+                    if ("admin".equals(role)) {
+                        // Đưa admin về LoginActivity
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Lỗi khi kiểm tra vai trò!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadUserData() {
+        // Lấy User ID từ Firebase Auth
+        String userId = mAuth.getCurrentUser().getUid();
+
+        // Tham chiếu đến Users -> userId trong Firebase
+        DatabaseReference userRef = database.getReference("Users").child(userId);
+
+        // Lấy dữ liệu người dùng
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Lấy giá trị email từ snapshot
+                    String email = snapshot.child("email").getValue(String.class);
+
+                    // Hiển thị email lên TextView
+                    binding.txtEmail.setText(email);
+                } else {
+                    Toast.makeText(MainActivity.this, "Không tìm thấy thông tin người dùng.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void openFilter() {
@@ -98,6 +154,7 @@ public class MainActivity extends BaseActivity {
     }
     // Hàm thực hiện tìm kiếm
     private void setVariable() {
+
         // logout
         binding.logoutBtn.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();

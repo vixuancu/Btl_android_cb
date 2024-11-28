@@ -71,6 +71,8 @@ public class OrderDetailActivity extends BaseActivity  {
                     binding.textOrderId.setText("Mã đơn: #" + order.getOrderId1());
                     binding.textOrderStatus.setText("Trạng thái: " + order.getStatus());
                     binding.textOrderDate.setText("Ngày đặt: " + order.getOrderDate());
+                    binding.textOrderName.setText("Order Username: " + order.getUsername());
+                    binding.textOrderPhone.setText("Phone: " + order.getPhone());
                     binding.textTotalPrice.setText("Tổng tiền: $" + order.getTotalPrice());
 
                     // Lấy danh sách món ăn từ nhánh "items"

@@ -26,6 +26,20 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/txtPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone: 0395298837"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/txtAdress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Adress: Say" />
+
+    <TextView
         android:id="@+id/tvOrderTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

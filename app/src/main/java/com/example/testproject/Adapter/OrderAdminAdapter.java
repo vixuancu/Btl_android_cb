@@ -43,7 +43,9 @@ public class OrderAdminAdapter extends RecyclerView.Adapter<OrderAdminAdapter.Or
         Orders order = orderList.get(position);
 
         holder.tvOrderId.setText("Order ID: #" + order.getOrderId1());
-        //holder.tvUserName.setText("User: " + order.getUserName());
+        holder.tvUserName.setText("User: " + order.getUsername());
+        holder.txtPhone.setText("Phone: " + order.getPhone());
+        holder.txtAdress.setText("Adress: " + order.getLocation());
         holder.tvOrderTime.setText("Order Time: " + order.getOrderDate());
         holder.tvTotalPrice.setText("Total: $" + order.getTotalPrice());
         holder.tvOrderStatus.setText("Status: " + order.getStatus());
@@ -76,13 +78,15 @@ public class OrderAdminAdapter extends RecyclerView.Adapter<OrderAdminAdapter.Or
     }
 
     public static class OrderAdminViewHolder extends RecyclerView.ViewHolder {
-        TextView tvOrderId, tvUserName, tvOrderTime, tvTotalPrice, tvOrderStatus;
+        TextView tvOrderId, tvUserName, tvOrderTime, tvTotalPrice, tvOrderStatus,txtPhone,txtAdress;
         Button btnUpdateStatus;
 
         public OrderAdminViewHolder(@NonNull View itemView) {
             super(itemView);
             tvOrderId = itemView.findViewById(R.id.tvOrderId);
             tvUserName = itemView.findViewById(R.id.tvUserName);
+            txtPhone = itemView.findViewById(R.id.txtPhone);
+            txtAdress = itemView.findViewById(R.id.txtAdress);
             tvOrderTime = itemView.findViewById(R.id.tvOrderTime);
             tvTotalPrice = itemView.findViewById(R.id.tvTotalPrice);
             tvOrderStatus = itemView.findViewById(R.id.tvOrderStatus);

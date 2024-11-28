@@ -54,6 +54,20 @@
 
             <!-- List of items -->
             <TextView
+                android:id="@+id/textOrderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="Order Username:ViXuanCu" />
+
+            <TextView
+                android:id="@+id/textOrderPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="Phone:0395298837" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Danh sách món:"

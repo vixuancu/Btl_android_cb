@@ -1,5 +1,6 @@
 package com.example.testproject.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.testproject.Adapter.OrderAdminAdapter;
 import com.example.testproject.Domain.Orders;
 import com.example.testproject.R;
+import com.example.testproject.databinding.ActivityAdminBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,31 +26,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminActivity extends BaseActivity implements OrderAdminAdapter.OnOrderStatusUpdateListener {
-
-    private RecyclerView recyclerViewOrders;
-    private ProgressBar progressBar;
+    ActivityAdminBinding binding;
     private OrderAdminAdapter orderAdminAdapter;
     private List<Orders> orderList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
 
-        recyclerViewOrders = findViewById(R.id.recyclerViewOrders);
-        progressBar = findViewById(R.id.progressBar);
+        // Sử dụng View Binding
+        binding = ActivityAdminBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
+        // Setup RecyclerView
+        binding.recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
 
+        // Khởi tạo danh sách và adapter
         orderList = new ArrayList<>();
         orderAdminAdapter = new OrderAdminAdapter(this, orderList, this::showUpdateStatusDialog);
-        recyclerViewOrders.setAdapter(orderAdminAdapter);
+        binding.recyclerViewOrders.setAdapter(orderAdminAdapter);
 
+        // Kiểm tra nếu người dùng bị đăng xuất
+        if (mAuth.getCurrentUser() == null) {
+            startActivity(new Intent(AdminActivity.this, LoginActivity.class));
+            finish(); // Đảm bảo không quay lại AdminActivity
+            return;
+        }
+
+        // Load dữ liệu đơn hàng và xử lý đăng xuất
         loadOrders();
+        logOut();
     }
 
+    private  void logOut() {
+        binding.btnLogOutAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                startActivity(new Intent(AdminActivity.this,LoginActivity.class));
+                finish();
+            }
+        });
+    }
     private void loadOrders() {
-        progressBar.setVisibility(View.VISIBLE);
+        // Hiển thị ProgressBar trong khi tải dữ liệu
+        binding.progressBar.setVisibility(View.VISIBLE);
 
         DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
         ordersRef.addValueEventListener(new ValueEventListener() {
@@ -60,12 +85,12 @@ public class AdminActivity extends BaseActivity implements OrderAdminAdapter.OnO
                     }
                 }
                 orderAdminAdapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressBar.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
                 Log.e("AdminActivity", "Failed to load orders: " + error.getMessage());
                 Toast.makeText(AdminActivity.this, "Error loading orders.", Toast.LENGTH_SHORT).show();
             }
