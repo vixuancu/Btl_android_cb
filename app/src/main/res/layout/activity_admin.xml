@@ -9,11 +9,11 @@
         android:id="@+id/btnLogOutAdmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="67dp"
-        android:layout_toEndOf="@+id/tvAdminTitle"
-        android:padding="5dp"
-        android:layout_weight="1"
-        app:srcCompat="@drawable/logout" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"
+        android:layout_alignParentTop="true"
+        android:padding="4dp"
+        app:srcCompat="@drawable/logout"  />
 
     <TextView
         android:id="@+id/tvAdminTitle"
