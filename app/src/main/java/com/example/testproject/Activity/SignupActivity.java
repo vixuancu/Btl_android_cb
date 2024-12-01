@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.testproject.Domain.Users;
 import com.example.testproject.R;
 import com.example.testproject.databinding.ActivitySignupBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,16 +46,38 @@ public class SignupActivity extends BaseActivity {
                     Toast.makeText(SignupActivity.this, "your password must be 6 character", Toast.LENGTH_SHORT).show();
                     return;
                 }
+            // Lấy role từ RadioGroup
+            String role = binding.radioUser.isChecked() ? "user" : "admin";
 
                 mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Log.i(TAG, "onComplete: ");
-                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                            // Lấy ID của người dùng
+                            String userId = mAuth.getCurrentUser().getUid();
+                            // Tạo đối tượng người dùng
+                            Users newUser = new Users(userId, email, role);
+
+                            // Lưu người dùng vào Firebase Database
+                            database.getReference("Users").child(userId).setValue(newUser)
+                                    .addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            Toast.makeText(SignupActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(SignupActivity.this, "Failed to save user role", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         } else {
-                            Log.i(TAG, "failure: ",task.getException());
-                            Toast.makeText(SignupActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                            // Kiểm tra lỗi nếu email đã tồn tại
+                            if (task.getException() != null && task.getException().getMessage() != null &&
+                                    task.getException().getMessage().contains("The email address is already in use")) {
+                                Toast.makeText(SignupActivity.this, "This email is already registered.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e(TAG, "Failure: ", task.getException());
+                                Toast.makeText(SignupActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                     }

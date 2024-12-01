@@ -76,6 +76,38 @@
                 android:background="@drawable/edittext_background"
                 android:inputType="textPassword"
                 />
+            <!-- RadioGroup for roles -->
+            <RadioGroup
+                android:id="@+id/radioGroupRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+                <RadioButton
+                    android:id="@+id/radioUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="User"
+                    app:buttonTint="@drawable/radio_button_color"
+                    android:textSize="16sp"
+                    android:textColor="@color/blue_grey"
+                    android:textColorHint="@color/red"
+                    android:checked="true"
+                     />
+
+                <RadioButton
+                    android:id="@+id/radioAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Admin"
+                    app:buttonTint="@drawable/radio_button_color"
+                    android:textColor="@color/blue_grey"
+                    android:textSize="16sp" />
+            </RadioGroup>
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/signupBtn"
