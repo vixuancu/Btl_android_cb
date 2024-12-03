@@ -13,8 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/red"
-        android:title="Chi tiết đơn hàng"
-        android:titleTextColor="@android:color/white" />
+        android:layout_gravity="center"
+        app:title="Chi tiết đơn hàng"
+        app:titleTextColor="@android:color/white" />
 
     <!-- ScrollView for details -->
     <ScrollView

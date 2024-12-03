@@ -15,8 +15,6 @@ import com.example.testproject.Adapter.OrderAdminAdapter;
 import com.example.testproject.Domain.Orders;
 import com.example.testproject.R;
 import com.example.testproject.databinding.ActivityAdminBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

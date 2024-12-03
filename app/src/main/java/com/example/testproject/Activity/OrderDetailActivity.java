@@ -1,5 +1,7 @@
 package com.example.testproject.Activity;
 
+import static com.example.testproject.Helper.applyStatusColor.applyStatusColor;
+
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -74,6 +76,8 @@ public class OrderDetailActivity extends BaseActivity  {
                     binding.textOrderName.setText("Order Username: " + order.getUsername());
                     binding.textOrderPhone.setText("Phone: " + order.getPhone());
                     binding.textTotalPrice.setText("Tổng tiền: $" + order.getTotalPrice());
+                    // Đổi màu trạng thái
+                    applyStatusColor(binding.textOrderStatus, order.getStatus(), OrderDetailActivity.this);
 
                     // Lấy danh sách món ăn từ nhánh "items"
                     orderItemList.clear();

@@ -1,5 +1,7 @@
 package com.example.testproject.Adapter;
 
+import static com.example.testproject.Helper.applyStatusColor.applyStatusColor;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,8 @@ public class OrderAdminAdapter extends RecyclerView.Adapter<OrderAdminAdapter.Or
         holder.tvOrderTime.setText("Order Time: " + order.getOrderDate());
         holder.tvTotalPrice.setText("Total: $" + order.getTotalPrice());
         holder.tvOrderStatus.setText("Status: " + order.getStatus());
-
+        // Đổi màu trạng thái
+        applyStatusColor(holder.tvOrderStatus, order.getStatus(), holder.itemView.getContext());//// Sử dụng Helper
         // Đổi màu trạng thái
         switch (order.getStatus()) {
             case "Pending":

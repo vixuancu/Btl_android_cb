@@ -1,5 +1,7 @@
 package com.example.testproject.Adapter;
 
+import static com.example.testproject.Helper.applyStatusColor.applyStatusColor;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -38,6 +40,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.textOrderId.setText("Mã đơn: #" + order.getOrderId1());
         holder.textOrderStatus.setText("Trạng thái: " + order.getStatus());
         holder.textOrderDate.setText("Ngày đặt: " + order.getOrderDate());
+        // Đổi màu trạng thái
+        applyStatusColor(holder.textOrderStatus, order.getStatus(), holder.itemView.getContext());//// Sử dụng Helper
 
         // Chuyển đến màn hình chi tiết đơn hàng khi nhấn vào
         holder.itemView.setOnClickListener(v -> {
